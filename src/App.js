@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import './App.css'
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { MdCheckBox } from "react-icons/md";
+
 
 function App() {
   const [isCompleteScreen, setIsCompleteScreen] = useState(false)
@@ -39,8 +42,14 @@ function App() {
 
         <div className="todo-list">
           <div className="todo-list-item">
-            <h3>Task 1</h3>
-            <p>Description</p>
+            <div>
+              <h3>Task 1</h3>
+              <p>Description</p>
+            </div>
+            <div>
+              <RiDeleteBin6Line className="icon" />
+              <MdCheckBox className="check-icon" />
+            </div>
           </div>
         </div>
 
