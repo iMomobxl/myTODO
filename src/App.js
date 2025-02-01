@@ -21,8 +21,8 @@ function App() {
         </div>
 
         <div className="btn-area">
-          <button>TODO</button>
-          <button>Completed</button>
+          <button className="secondaryBtn">TODO</button>
+          <button className="secondaryBtn">Completed</button>
         </div>
 
         <div className="todo-list">
