@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdCheckBox } from "react-icons/md";
-
+import { handleAddTodo } from "./js/handleAddTodo"
+import { handleComplete } from "./js/handleComplete"
+import { handleDeleteCompletedTodo } from "./js/handleDeleteCompleteTodo"
+import { handleDeleteTodo } from "./js/handleDeleteTodo"
 
 function App() {
   const [isCompleteScreen, setIsCompleteScreen] = useState(false)
@@ -11,57 +14,7 @@ function App() {
   const [newDescription, setNewDescription] = useState("")
   const [completedTodos, setCompletedTodos] = useState([])
 
-  const handleAddTodo = () => {
-    let newTodoItem = {
-      title: newTitle,
-      description: newDescription
-    }
-
-    let updatedTodoArr = [...allTodos]
-    updatedTodoArr.push(newTodoItem)
-    setTodos(updatedTodoArr)
-    localStorage.setItem('todolist', JSON.stringify(updatedTodoArr))
-  }
-
-  const handleDeleteTodo = (index) => {
-    let newTodoList = [...allTodos]
-    newTodoList.splice(index, 1)
-
-    localStorage.setItem('todolist', JSON.stringify(newTodoList))
-    setTodos(newTodoList)
-  }
-
-  const handleComplete = (index) => {
-    let now = new Date()
-    let day = now.getDate()
-    let month = now.getMonth() + 1
-    let year = now.getFullYear()
-    let hour = now.getHours()
-    let min = now.getMinutes()
-    let sec = now.getSeconds()
-    let completedOn = `${day}/${month}/${year} at ${hour}:${min}:${sec}`
-
-    let filteredItem = {
-      ...allTodos[index],
-      completedOn:completedOn
-    }
-
-    let updatedCompletedArr = [...completedTodos]
-    updatedCompletedArr.push(filteredItem)
-    setCompletedTodos(updatedCompletedArr)
-    handleDeleteTodo(index)
-    localStorage.setItem('completedTodo', JSON.stringify(updatedCompletedArr))
-  }
-
-  const handleDeleteCompletedTodo = (index) => {
-    let newTodoList = [...completedTodos]
-    newTodoList.splice(index, 1)
-
-    localStorage.setItem('completedTodo', JSON.stringify(newTodoList))
-    setCompletedTodos(newTodoList)
-  }
-
-  useEffect( () => {
+  useEffect(() => {
     let savedTodo = JSON.parse(localStorage.getItem('todolist'))
     let savedCompletedTodo = JSON.parse(localStorage.getItem('completedTodo'))
     if (savedTodo) {
@@ -99,7 +52,7 @@ function App() {
           <div className="todo-input-item">
             <button 
               type="button" 
-              onClick={ handleAddTodo }
+              onClick={ () => handleAddTodo(newTitle, newDescription, allTodos, setTodos) }
               className="primaryBtn">
                 Add
             </button>
@@ -133,12 +86,12 @@ function App() {
                   <div>
                     <RiDeleteBin6Line 
                       className="icon" 
-                      onClick={() => handleDeleteTodo(index)}
+                      onClick={() => handleDeleteTodo(index, allTodos, setTodos)}
                       title="Delete?"
                     />
                     <MdCheckBox 
                       className="check-icon" 
-                      onClick={() => handleComplete(index)}
+                      onClick={() => handleComplete(index, allTodos, completedTodos, setTodos, setCompletedTodos)}
                       title="Complete?"
                     />
                   </div>
@@ -157,7 +110,7 @@ function App() {
                   <div>
                     <RiDeleteBin6Line 
                       className="icon" 
-                      onClick={() => handleDeleteCompletedTodo(index)}
+                      onClick={() => handleDeleteCompletedTodo(index, completedTodos, setCompletedTodos)}
                       title="Delete?"
                     />
                   </div>
