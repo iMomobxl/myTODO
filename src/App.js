@@ -22,6 +22,14 @@ function App() {
     localStorage.setItem('todolist', JSON.stringify(updatedTodoArr))
   }
 
+  const handleDeleteTodo = (index) => {
+    let newTodoList = [...allTodos]
+    newTodoList.splice(index, 1)
+
+    localStorage.setItem('todolist', JSON.stringify(newTodoList))
+    setTodos(newTodoList)
+  }
+
   useEffect( () => {
     let savedTodo = JSON.parse(localStorage.getItem('todolist'))
     if (savedTodo) {
@@ -65,13 +73,13 @@ function App() {
 
         <div className="btn-area">
           <button 
-            className={`secondaryBtn ${isCompleteScreen == false && 'active'}`}
+            className={`secondaryBtn ${isCompleteScreen === false && 'active'}`}
             onClick={() => setIsCompleteScreen (false)}
           >
             TODO
           </button>
           <button 
-            className={`secondaryBtn ${isCompleteScreen == true && 'active'}`}
+            className={`secondaryBtn ${isCompleteScreen === true && 'active'}`}
             onClick={() => setIsCompleteScreen (true)}
           >
             Completed
@@ -88,8 +96,16 @@ function App() {
                     <p>{ item.description }</p>
                   </div>
                   <div>
-                    <RiDeleteBin6Line className="icon" />
-                    <MdCheckBox className="check-icon" />
+                    <RiDeleteBin6Line 
+                      className="icon" 
+                      onClick={() => handleDeleteTodo(index)}
+                      title="Delete?"
+                    />
+                    <MdCheckBox 
+                      className="check-icon" 
+                      onClick={() => handleDeleteTodo(index)}
+                      title="Complete?"
+                    />
                   </div>
                 </div>
               )
