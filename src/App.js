@@ -9,6 +9,7 @@ function App() {
   const [allTodos, setTodos] = useState([])
   const [newTitle, setNewTitle] = useState("")
   const [newDescription, setNewDescription] = useState("")
+  const [completedTodos, setCompletedTodos] = useState([])
 
   const handleAddTodo = () => {
     let newTodoItem = {
@@ -30,10 +31,44 @@ function App() {
     setTodos(newTodoList)
   }
 
+  const handleComplete = (index) => {
+    let now = new Date()
+    let day = now.getDate()
+    let month = now.getMonth() + 1
+    let year = now.getFullYear()
+    let hour = now.getHours()
+    let min = now.getMinutes()
+    let sec = now.getSeconds()
+    let completedOn = `${day}/${month}/${year} at ${hour}:${min}:${sec}`
+
+    let filteredItem = {
+      ...allTodos[index],
+      completedOn:completedOn
+    }
+
+    let updatedCompletedArr = [...completedTodos]
+    updatedCompletedArr.push(filteredItem)
+    setCompletedTodos(updatedCompletedArr)
+    handleDeleteTodo(index)
+    localStorage.setItem('completedTodo', JSON.stringify(updatedCompletedArr))
+  }
+
+  const handleDeleteCompletedTodo = (index) => {
+    let newTodoList = [...completedTodos]
+    newTodoList.splice(index, 1)
+
+    localStorage.setItem('completedTodo', JSON.stringify(newTodoList))
+    setCompletedTodos(newTodoList)
+  }
+
   useEffect( () => {
     let savedTodo = JSON.parse(localStorage.getItem('todolist'))
+    let savedCompletedTodo = JSON.parse(localStorage.getItem('completedTodo'))
     if (savedTodo) {
       setTodos(savedTodo)
+    }
+    if (savedCompletedTodo) {
+      setCompletedTodos(savedCompletedTodo)
     }
   }, [])
 
@@ -88,7 +123,7 @@ function App() {
 
         <div className="todo-list">
           
-            { allTodos.map((item, index) => {
+            {isCompleteScreen === false && allTodos.map((item, index) => {
               return (
                 <div className="todo-list-item" key={ index }>
                   <div>
@@ -103,8 +138,27 @@ function App() {
                     />
                     <MdCheckBox 
                       className="check-icon" 
-                      onClick={() => handleDeleteTodo(index)}
+                      onClick={() => handleComplete(index)}
                       title="Complete?"
+                    />
+                  </div>
+                </div>
+              )
+            })}
+
+            {isCompleteScreen === true && completedTodos.map((item, index) => {
+              return (
+                <div className="todo-list-item" key={ index }>
+                  <div>
+                    <h3>{ item.title }</h3>
+                    <p>{ item.description }</p>
+                    <p>Completed on: { item.completedOn }</p>
+                  </div>
+                  <div>
+                    <RiDeleteBin6Line 
+                      className="icon" 
+                      onClick={() => handleDeleteCompletedTodo(index)}
+                      title="Delete?"
                     />
                   </div>
                 </div>
